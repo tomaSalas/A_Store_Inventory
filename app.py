@@ -97,13 +97,13 @@ def add_entry():
     
     if input("Save entry? [Yn]:   ").lower() != "n":
         product = Product()
-        try:
+        try:#error here
             if Product.select().where(Product.product_name == product_name) != None:
                 query = Product.update(product.product_name = product_name, product.date_update=datetime.now, \
                 product.product_price = int(float(product_price) * 100)).where(Product.product_name == product_name)
                 query.execute()
                 print("Updated Successfully!")
-                return
+                return #True here
             product.product_name = product_name
             product.product_price = int(float(product_price) * 100)
             product.product_quantity = int(product_quantity)
