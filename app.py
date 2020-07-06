@@ -99,7 +99,8 @@ def add_entry():
         product = Product()
         try:
             if Product.select().where(Product.product_name == product_name) != None:
-                query = Product.update(created=datetime.now).where(Product.product_name == product_name)
+                query = Product.update(product.product_name = product_name, product.date_update=datetime.now, \
+                product.product_price = int(float(product_price) * 100)).where(Product.product_name == product_name)
                 query.execute()
                 print("Updated Successfully!")
                 return
