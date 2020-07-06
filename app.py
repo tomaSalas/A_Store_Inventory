@@ -96,24 +96,24 @@ def add_entry():
         product_name, product_price, product_quantity))
     
     if input("Save entry? [Yn]:   ").lower() != "n":
-        product = Product()
-        try:#error here
-            if Product.select().where(Product.product_name == product_name) != None:
-                query = Product.update(product.product_name = product_name, product.date_update=datetime.now, \
-                product.product_price = int(float(product_price) * 100)).where(Product.product_name == product_name)
-                query.execute()
-                print("Updated Successfully!")
-                return #True here
-            product.product_name = product_name
-            product.product_price = int(float(product_price) * 100)
-            product.product_quantity = int(product_quantity)
+        try:
+            Product.create(
+            product_name = product_name, 
+            product_quantity = int(float(product_price) * 100), 
+            product_price = int(product_quantity))
+            product.save()
+            print("Successfully Created!")
         except ValueError:
             print("One of the following inputs is incorrect 'product quantity', product_price or product.product_name!"
                   "please try again!")
             add_entry()
-        else:
+        except IntegrityError:
+            product = Product.get(product_name=product_name)
+            product.date_update=datetime.now
+            product_price = int(float(product_price) * 100)
+            product.product_quantity = int(product_quantity)
             product.save()
-            print('Successfully added!')
+            print("Successfully Updated!")
 
 
 def view_entries():
@@ -121,14 +121,14 @@ def view_entries():
     print("-" * 6 + "VIEW PRODUCT" + "-" * 6)
     try:
         product_id = int(input("Please select a product id:  "))
-        if product_id <= 0:
-            print("please select a value grater than 0")
-            view_entries()
+        product = Product.get_by_id(product_id)
     except ValueError:
-        print('Please input integer for product id!')
+        print("Please input integer for product id!")
+        view_entries()
+    except:
+        print("That record does not seem to exist!")
         view_entries()
     else:
-        product = Product.get_by_id(product_id)
         print("*" * 6 + "Here are product details" + "*" * 6)
         print("\n")
         print("Product: {}".format(product.product_name))
