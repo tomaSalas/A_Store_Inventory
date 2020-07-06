@@ -92,13 +92,17 @@ def add_entry():
     product_price = input(">   ")
     print("What is the product_quantity?")
     product_quantity = input(">   ")
-    print("name: {}, price {}, quantity {} ".format(
+    print("name: {}, price ${}, quantity {} ".format(
         product_name, product_price, product_quantity))
     
-    query = Product.select().where(Product.product_name == product_name)
     if input("Save entry? [Yn]:   ").lower() != "n":
         product = Product()
         try:
+            if Product.select().where(Product.product_name == product_name) != None:
+                query = Product.update(created=datetime.now).where(Product.product_name == product_name)
+                query.execute()
+                print("Updated Successfully!")
+                return
             product.product_name = product_name
             product.product_price = int(float(product_price) * 100)
             product.product_quantity = int(product_quantity)
