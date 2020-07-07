@@ -42,7 +42,7 @@ db = SqliteDatabase("inventory.db")
 
 class Product(Model):
     id_product = AutoField()
-    product_name = CharField()
+    product_name = CharField(unique=True)
     product_quantity = IntegerField()
     product_price = IntegerField()
     date_updated = DateTimeField(default=datetime.now)
