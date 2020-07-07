@@ -97,6 +97,7 @@ def add_entry():
     
     if input("Save entry? [Yn]:   ").lower() != "n":
         try:
+            product = Product()
             Product.create(
             product_name = product_name, 
             product_quantity = int(float(product_price) * 100), 
