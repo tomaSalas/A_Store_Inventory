@@ -36,8 +36,15 @@ def add_csv_to_db(data):
     """Add the data from dic to the database"""
     # only if there is nothing in the table
     if len(Product.select()) == 0:
-        for product in data:
-            Product.create(**product)
+        try:
+            for product in data:
+                Product.create(**product)
+        except IntegrityError:
+            product = Product.get(product_name=product_name)
+            product.update = product.update
+            product.product_price = int(float(product_price) * 100)
+            product.product_quantity = int(product_quantity)
+            product.save()
 
 
 db = SqliteDatabase("inventory.db")
