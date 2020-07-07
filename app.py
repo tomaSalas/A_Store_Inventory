@@ -16,6 +16,9 @@ def currency_to_cents(currency):
         cents = 0
     return cents
 
+def date_time_format(date):
+    xc = datetime.strptime(date, '%m/%d/%Y')
+    return xc
 
 def read_csv(name_of_file):
     products = []
@@ -25,7 +28,7 @@ def read_csv(name_of_file):
             products.append({"product_name": row["product_name"],
                              "product_price": currency_to_cents(row["product_price"]),
                              "product_quantity": int(row["product_quantity"]),
-                             "date_updated": datetime.strptime(row['date_updated'], '%m/%d/%Y')})
+                             "date_updated": date_time_format(row['date_updated'])})
     return products
 
 
@@ -110,8 +113,8 @@ def add_entry():
             add_entry()
         except IntegrityError:
             product = Product.get(product_name=product_name)
-            product.date_update=datetime.now
-            product_price = int(float(product_price) * 100)
+            product.update = product.update
+            product.product_price = int(float(product_price) * 100)
             product.product_quantity = int(product_quantity)
             product.save()
             print("Successfully Updated!")
