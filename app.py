@@ -36,15 +36,15 @@ def add_csv_to_db(data):
     """Add the data from dic to the database"""
     # only if there is nothing in the table
     if len(Product.select()) == 0:
-        try:
             for product in data:
-                Product.create(**product)
-        except IntegrityError:
-                product1 = Product.get(product_name=product["product_name"])
-                product1 = product1.product_quantity=product["product_quantity"]
-                product1 = product1.product_price=product["product_price"]
-                product1 = product1.date_updated= product["date_updated"]
-                product1.save()
+                try:
+                    Product.create(**product)
+                except IntegrityError:
+                        product1 = Product.get(product_name=product["product_name"])
+                        product1.product_quantity=product["product_quantity"]
+                        product1.product_price=product["product_price"]
+                        product1.date_updated= product["date_updated"]
+                        product1.save()
                 
 
 db = SqliteDatabase("inventory.db")
@@ -82,8 +82,7 @@ def menu_loop():
         if bool(re.search(r'[^abvq]', choice)) == True:
             print("Oh no! That is not a valid input. Please try again")
             menu_loop()
-
-
+            
         if choice in menu:
             clear()
             menu[choice]()
@@ -104,27 +103,26 @@ def add_entry():
     product_quantity = input(">   ")
     print("name: {}, price ${}, quantity {} ".format(
         product_name, product_price, product_quantity))
-    
     if input("Save entry? [Yn]:   ").lower() != "n":
         try:
             product = Product()
-            Product.create(
-            product_name = product_name, 
-            product_quantity = int(float(product_price) * 100), 
-            product_price = int(product_quantity))
-            product.save()
-            print("Successfully Created!")
-        except ValueError:
-            print("One of the following inputs is incorrect 'product quantity', product_price or product.product_name!"
-                  "please try again!")
-            add_entry()
-        except IntegrityError:
-            product = Product.get(product_name=product_name)
-            product.update = product.update
-            product.product_price = int(float(product_price) * 100)
+            product.product_name = product_name
+            product.product_price = int(float(product_price)*100)
             product.product_quantity = int(product_quantity)
             product.save()
-            print("Successfully Updated!")
+            print("successfully Created!")
+        except ValueError: 
+            print("One of the following inputs is incorrect 'product quantity', product_price or product.product_name!"
+            "please try again!")
+            add_entry()                      
+        except IntegrityError:
+            product1 = Product.get(product_name=product_name)
+            product1.product_quantity = int(product_quantity)
+            product1.product_price = int(float(product_price) * 100)
+            product1.update = product.update
+            product1.save()
+            print("successfully Updated!")
+    
 
 
 def view_entries():
@@ -137,24 +135,25 @@ def view_entries():
         print("Please input integer for product id!")
         view_entries()
     except:
-        print("That record does not seem to exist!")
+        print("Oh no! That record does not seem to exist. Please Try again")
         view_entries()
     else:
-        print("*" * 6 + "Here are product details" + "*" * 6)
+        print("*" * 6 + "Here are the product details" + "*" * 6)
         print("\n")
         print("Product: {}".format(product.product_name))
         print("product_price: {}".format(product.product_price))
         print("product_quantity: {}".format(product.product_quantity))
         print("date_updated: {}".format(product.date_updated))
         print("There are {} items in this table".format(len(Product.select())))
-        print("input 'n' for veiw new record or 'd' to delete a product. Input \
+        print("\n")
+        print("input 'n' to view a new record or 'd' to delete a product. Input \
 any other letter to go back to the main menu")
         next_action = input("Action:  ").lower().strip()
         if next_action == "n":
             view_entries()
         elif next_action == "d":
-            delete_entry(product)
-            print("The entry was deleted sucessfully!")
+            delete_entry(Product.get_by_id(product_id))
+            
 
 
 def backup_db():
@@ -174,13 +173,14 @@ def backup_db():
                 "date_updated": datetime.strftime(product.date_updated, '%m/%d/%Y'),
             })
 
-        print('Backup was done succssfully!')
+        print('Backup was done successfully!')
 
 
-def delete_entry(product):
+def delete_entry(key_id):
     """delete_product"""
     if input("Are you sure you want delete a product[yn]?").lower() == "y":
-        product.delete.instance()
+        Product.delete_by_id(key_id)
+        print("deleted")
 
 
 menu = OrderedDict([("a", add_entry),
