@@ -38,9 +38,7 @@ def add_csv_to_db(data):
     if len(Product.select()) == 0:
         try:
             for product in data:
-                Product.create(product_name=product["product_name"],
-                               product_quantity=product["product_quantity"],
-                               product_price=product["product_price"])
+                Product.create(**product)
         except IntegrityError:
                 product1 = Product.get(product_name=product["product_name"])
                 product1 = product1.product_quantity=product["product_quantity"]
