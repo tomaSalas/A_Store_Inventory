@@ -28,7 +28,7 @@ def read_csv(name_of_file):
             products.append({"product_name": row["product_name"],
                              "product_price": currency_to_cents(row["product_price"]),
                              "product_quantity": int(row["product_quantity"]),
-                             "date_updated": date_time_format(row['date_updated'])})
+                             "date_updated": date_time_format(row["date_updated"])})     
     return products
 
 
@@ -36,16 +36,18 @@ def add_csv_to_db(data):
     """Add the data from dic to the database"""
     # only if there is nothing in the table
     if len(Product.select()) == 0:
-        for product in data:
-            try:
-                Product.create(**product)
-            except IntegrityError:
-                product = Product.get(product_name=product_name)
-                product.update = date_updated
-                product.product_price = product_price
-                product.product_quantity = product_quantity
-                product.save()
-
+        try:
+            for product in data:
+                Product.create(product_name=product["product_name"],
+                               product_quantity=product["product_quantity"],
+                               product_price=product["product_price"])
+        except IntegrityError:
+                product1 = Product.get(product_name=product["product_name"])
+                product1 = product1.product_quantity=product["product_quantity"]
+                product1 = product_price=product["product_price"]
+                product1 = date_updated= product["date_updated"]
+                product1.save()
+                
 
 db = SqliteDatabase("inventory.db")
 
