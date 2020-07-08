@@ -44,8 +44,8 @@ def add_csv_to_db(data):
         except IntegrityError:
                 product1 = Product.get(product_name=product["product_name"])
                 product1 = product1.product_quantity=product["product_quantity"]
-                product1 = product_price=product["product_price"]
-                product1 = date_updated= product["date_updated"]
+                product1 = product1.product_price=product["product_price"]
+                product1 = product1.date_updated= product["date_updated"]
                 product1.save()
                 
 
