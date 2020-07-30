@@ -1,2 +1,2 @@
 # A_Store_Inventory
- 4th project of techdree at Treehouse 
+The purpose of this project was to create a database program through a third-party module for python call Peewee. 
